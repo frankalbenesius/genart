@@ -73,6 +73,30 @@ The drawing function receives:
 Set `meta.animated` to `true` when the drawing uses `time`. Static sketches only
 redraw when their inputs change.
 
+### Sketch-specific controls
+
+A sketch can declare extra sliders alongside its metadata:
+
+```js
+export const meta = {
+  title: "My adjustable sketch",
+  animated: false,
+  parameters: [
+    {
+      key: "count",
+      label: "Count",
+      min: 10,
+      max: 100,
+      step: 1,
+      default: 40,
+    },
+  ],
+};
+```
+
+The drawing function receives the current values as `parameters.count`. The
+runtime creates the controls and includes their values in the shareable URL.
+
 ## Save and share
 
 Press `S` or click **Export PNG** to render a 2400 × 1600 PNG. Exports use the
@@ -103,8 +127,9 @@ shows that a grid only visualizes the field; any point or moving path can sample
 it.
 
 The remaining sketches are optional demos adapted from Frank's older plotter
-work: **Plateaus** distorts connected topology, **Hair field** grows many paths
-through a field, and **Faces** maps noise onto more semantic visual decisions.
+work: **Plateaus** distorts connected topology, **Faces** maps noise onto more
+semantic visual decisions, and **Wobbly sphere** uses 4D noise to deform a
+rotating stack of projected 3D arcs.
 
 ## Where to keep exploring
 

@@ -26,6 +26,7 @@ const elements = {
   scaleValue: document.querySelector("#scale-value"),
   strength: document.querySelector("#strength"),
   strengthValue: document.querySelector("#strength-value"),
+  sketchControls: document.querySelector("#sketch-controls"),
   secondaryAction: document.querySelector("#secondary-action"),
   export: document.querySelector("#export"),
   recordWebm: document.querySelector("#record-webm"),
@@ -57,8 +58,73 @@ if (!sketches.some((sketch) => sketch.id === state.sketchId)) {
   state.sketchId = sketches[0].id;
 }
 
+const initialSketchId = state.sketchId;
+const parameterValues = new Map();
+
 function selectedSketch() {
   return sketches.find((sketch) => sketch.id === state.sketchId);
+}
+
+function parametersFor(sketch) {
+  if (!parameterValues.has(sketch.id)) {
+    const values = {};
+    for (const parameter of sketch.parameters ?? []) {
+      const rawQueryValue = query.get(`param-${parameter.key}`);
+      const queryValue =
+        sketch.id === initialSketchId && rawQueryValue !== null
+          ? Number(rawQueryValue)
+          : Number.NaN;
+      values[parameter.key] = Number.isFinite(queryValue)
+        ? queryValue
+        : parameter.default;
+    }
+    parameterValues.set(sketch.id, values);
+  }
+  return parameterValues.get(sketch.id);
+}
+
+function formatParameter(parameter, value) {
+  const decimals = String(parameter.step).split(".")[1]?.length ?? 0;
+  return Number(value).toFixed(decimals);
+}
+
+function buildSketchControls() {
+  const sketch = selectedSketch();
+  const values = parametersFor(sketch);
+  elements.sketchControls.replaceChildren();
+
+  for (const parameter of sketch.parameters ?? []) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "control";
+
+    const row = document.createElement("div");
+    row.className = "control-row";
+    const label = document.createElement("label");
+    label.htmlFor = `parameter-${parameter.key}`;
+    label.textContent = parameter.label;
+    const output = document.createElement("output");
+    output.dataset.parameterOutput = parameter.key;
+    output.value = formatParameter(parameter, values[parameter.key]);
+    row.append(label, output);
+
+    const input = document.createElement("input");
+    input.id = `parameter-${parameter.key}`;
+    input.type = "range";
+    input.min = String(parameter.min);
+    input.max = String(parameter.max);
+    input.step = String(parameter.step);
+    input.value = String(values[parameter.key]);
+    values[parameter.key] = Number(input.value);
+    output.value = formatParameter(parameter, values[parameter.key]);
+    input.addEventListener("input", () => {
+      values[parameter.key] = Number(input.value);
+      output.value = formatParameter(parameter, input.value);
+      changed();
+    });
+
+    wrapper.append(row, input);
+    elements.sketchControls.append(wrapper);
+  }
 }
 
 function currentTime(now = performance.now()) {
@@ -73,6 +139,11 @@ function updateUrl() {
     scale: String(state.scale),
     strength: String(state.strength),
   });
+  const sketch = selectedSketch();
+  const values = parametersFor(sketch);
+  for (const parameter of sketch.parameters ?? []) {
+    nextQuery.set(`param-${parameter.key}`, String(values[parameter.key]));
+  }
   window.history.replaceState(null, "", `?${nextQuery}`);
 }
 
@@ -89,6 +160,14 @@ function updateControls() {
   elements.secondaryAction.textContent = state.paused ? "Play" : "Pause";
   elements.recordWebm.hidden = !sketch.animated;
   elements.export.classList.toggle("wide", !sketch.animated);
+
+  const values = parametersFor(sketch);
+  for (const parameter of sketch.parameters ?? []) {
+    const output = elements.sketchControls.querySelector(
+      `[data-parameter-output="${parameter.key}"]`,
+    );
+    if (output) output.value = formatParameter(parameter, values[parameter.key]);
+  }
 }
 
 function draw(now = performance.now()) {
@@ -103,6 +182,7 @@ function draw(now = performance.now()) {
     scale: state.scale,
     strength: state.strength,
     time: currentTime(now),
+    parameters: parametersFor(sketch),
   });
 
   if (sketch.animated && !state.paused) {
@@ -133,6 +213,7 @@ function saveImage() {
     scale: state.scale,
     strength: state.strength,
     time: currentTime(),
+    parameters: parametersFor(sketch),
     filename: `${sketch.id}-${state.seed}.png`,
   });
   showToast("Exported a 2400 × 1600 PNG");
@@ -143,6 +224,7 @@ elements.sketch.addEventListener("change", (event) => {
   state.paused = false;
   elapsedAtPause = 0;
   startedAt = performance.now();
+  buildSketchControls();
   changed();
 });
 
@@ -218,6 +300,7 @@ window.addEventListener("keydown", (event) => {
 });
 
 new ResizeObserver(() => draw()).observe(elements.canvas);
+buildSketchControls();
 updateControls();
 updateUrl();
 draw();

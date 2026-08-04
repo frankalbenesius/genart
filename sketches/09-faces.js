@@ -3,7 +3,7 @@
 export const meta = {
   title: "09 — Faces",
   description:
-    "Several samples from one field become gaze, expression, and imperfect outlines.",
+    "Subtle noise samples become small shifts in gaze and expression across a crowd.",
   animated: false,
 };
 
@@ -36,6 +36,7 @@ export default function draw({
       const centerY = margin + cellHeight * (row + 0.5);
       const look = noise2D(u * scale, v * scale) * Math.PI * 2;
       const mood = noise2D(u * scale + 100, v * scale + 100);
+      const shape = noise2D(u * scale + 200, v * scale + 200);
 
       drawFace(context, {
         centerX,
@@ -43,8 +44,7 @@ export default function draw({
         radius: faceRadius,
         look,
         mood,
-        noise2D,
-        scale,
+        shape,
         strength,
       });
     }
@@ -53,31 +53,24 @@ export default function draw({
 
 function drawFace(
   context,
-  { centerX, centerY, radius, look, mood, noise2D, scale, strength },
+  { centerX, centerY, radius, look, mood, shape, strength },
 ) {
-  const outlineSteps = 42;
   context.beginPath();
-  for (let step = 0; step <= outlineSteps; step += 1) {
-    const angle = (step / outlineSteps) * Math.PI * 2;
-    const wobble =
-      1 +
-      noise2D(
-        Math.cos(angle) * scale + centerX * 0.001,
-        Math.sin(angle) * scale + centerY * 0.001,
-      ) *
-        0.08 *
-        strength;
-    const x = centerX + Math.cos(angle) * radius * wobble;
-    const y = centerY + Math.sin(angle) * radius * 1.1 * wobble;
-    if (step === 0) context.moveTo(x, y);
-    else context.lineTo(x, y);
-  }
+  context.ellipse(
+    centerX,
+    centerY,
+    radius * (1 + shape * 0.025),
+    radius * (1.08 - shape * 0.018),
+    0,
+    0,
+    Math.PI * 2,
+  );
   context.stroke();
 
   const eyeGap = radius * 0.36;
   const eyeRadius = Math.max(1.5, radius * 0.085);
-  const eyeShiftX = Math.cos(look) * radius * 0.18;
-  const eyeShiftY = Math.sin(look) * radius * 0.12;
+  const eyeShiftX = Math.cos(look) * radius * 0.1 * strength;
+  const eyeShiftY = Math.sin(look) * radius * 0.065 * strength;
   context.fillStyle = "#342f2b";
   for (const side of [-1, 1]) {
     context.beginPath();
@@ -97,7 +90,7 @@ function drawFace(
   context.moveTo(centerX - mouthWidth / 2, mouthY);
   context.quadraticCurveTo(
     centerX,
-    mouthY + mood * radius * 0.32 * strength,
+    mouthY + mood * radius * 0.18 * strength,
     centerX + mouthWidth / 2,
     mouthY,
   );

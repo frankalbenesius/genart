@@ -5,6 +5,34 @@ export const meta = {
   description:
     "The same noise field displaces a connected grid, turning orderly topology into terrain.",
   animated: false,
+  parameters: [
+    { key: "columns", label: "Columns", min: 16, max: 120, step: 1, default: 72 },
+    { key: "rows", label: "Rows", min: 12, max: 80, step: 1, default: 48 },
+    {
+      key: "displacement",
+      label: "Displacement",
+      min: 0,
+      max: 0.18,
+      step: 0.005,
+      default: 0.065,
+    },
+    {
+      key: "direction",
+      label: "Direction",
+      min: -180,
+      max: 180,
+      step: 1,
+      default: 45,
+    },
+    {
+      key: "opacity",
+      label: "Line opacity",
+      min: 0.1,
+      max: 1,
+      step: 0.05,
+      default: 0.4,
+    },
+  ],
 };
 
 export default function draw({
@@ -14,16 +42,17 @@ export default function draw({
   noise2D,
   scale,
   strength,
+  parameters,
 }) {
-  const columns = 72;
-  const rows = 48;
+  const { columns, rows, displacement, direction, opacity } = parameters;
   const margin = width * 0.06;
-  const displacement = Math.min(width, height) * 0.065 * strength;
+  const shift = Math.min(width, height) * displacement * strength;
+  const angle = (direction * Math.PI) / 180;
   const points = [];
 
   context.fillStyle = "#f4efe4";
   context.fillRect(0, 0, width, height);
-  context.strokeStyle = "rgba(28, 27, 25, 0.42)";
+  context.strokeStyle = `rgba(28, 27, 25, ${opacity})`;
   context.lineWidth = Math.max(0.7, width * 0.00065);
 
   for (let column = 0; column < columns; column += 1) {
@@ -32,8 +61,8 @@ export default function draw({
       const v = row / (rows - 1);
       const noise = noise2D(u * scale, v * scale);
       points.push([
-        margin + u * (width - margin * 2) + noise * displacement,
-        margin + v * (height - margin * 2) + noise * displacement,
+        margin + u * (width - margin * 2) + Math.cos(angle) * noise * shift,
+        margin + v * (height - margin * 2) + Math.sin(angle) * noise * shift,
       ]);
     }
   }

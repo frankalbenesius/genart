@@ -8,6 +8,7 @@ test("the page exposes the workshop controls and canvas", async () => {
   assert.match(html, /id="sketch"/);
   assert.match(html, /id="scale"/);
   assert.match(html, /id="strength"/);
+  assert.match(html, /id="sketch-controls"/);
   assert.match(html, /Export PNG/);
   assert.match(html, /Record 6s WebM/);
 });
