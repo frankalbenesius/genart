@@ -216,7 +216,7 @@ function saveImage() {
     parameters: parametersFor(sketch),
     filename: `${sketch.id}-${state.seed}.png`,
   });
-  showToast("Exported a 2400 × 1600 PNG");
+  showToast("Exported a 2400 × 2400 PNG");
 }
 
 elements.sketch.addEventListener("change", (event) => {

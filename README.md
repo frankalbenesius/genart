@@ -99,7 +99,7 @@ runtime creates the controls and includes their values in the shareable URL.
 
 ## Save and share
 
-Press `S` or click **Export PNG** to render a 2400 × 1600 PNG. Exports use the
+Press `S` or click **Export PNG** to render a 2400 × 2400 PNG. Exports use the
 same seed and controls as the visible sketch.
 
 Animated sketches also show **Record 6s WebM**. Recording captures the visible
