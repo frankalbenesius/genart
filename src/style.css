@@ -27,6 +27,10 @@ button:focus-visible, select:focus-visible, input:focus-visible {
   outline: 3px solid rgba(240, 90, 54, 0.28);
   outline-offset: 2px;
 }
+a:focus-visible {
+  outline: 3px solid rgba(240, 90, 54, 0.28);
+  outline-offset: 2px;
+}
 
 .studio { min-height: 100vh; display: grid; grid-template-columns: minmax(250px, 330px) minmax(0, 1fr); }
 .sidebar {
@@ -40,7 +44,10 @@ button:focus-visible, select:focus-visible, input:focus-visible {
   max-height: 100vh;
   overflow-y: auto;
 }
-.eyebrow { margin: 0 0 8px; color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: 0.12em; text-transform: uppercase; }
+.topline { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.eyebrow { margin: 0; color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: 0.12em; text-transform: uppercase; }
+.source-link { flex: none; color: var(--muted); font-size: 11px; text-underline-offset: 3px; }
+.source-link:hover { color: var(--ink); }
 h1 { margin: 0 0 20px; font-size: 22px; font-weight: 680; letter-spacing: -0.035em; line-height: 1; white-space: nowrap; }
 .description { min-height: 58px; margin: 2px 2px 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
 .control { display: grid; gap: 8px; margin: 18px 0; }

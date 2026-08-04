@@ -95,9 +95,9 @@ export const meta = {
 ```
 
 The drawing function receives the current values as `parameters.count`. The
-runtime creates the controls and includes their values in the shareable URL.
+runtime creates the controls and keeps their values in memory while you work.
 
-## Save and share
+## Save your work
 
 Press `S` or click **Export PNG** to render a 2400 × 2400 PNG. Exports use the
 same seed and controls as the visible sketch.
@@ -106,9 +106,8 @@ Animated sketches also show **Record 6s WebM**. Recording captures the visible
 canvas at 60 frames per second using the browser's `MediaRecorder` API. Browser
 support varies, so PNG remains the dependable export path.
 
-The selected sketch, seed, scale, and strength live in the URL query string.
-Copying the URL recreates the same still image. Time is intentionally not
-included.
+Sketch and control changes do not alter the URL. Reloading the page resets the
+playground to its defaults, so export an image or animation to keep a result.
 
 Canvas is immediate-mode rather than retained vector geometry, so the runtime
 does not pretend it can automatically export useful SVG. A future sketch can

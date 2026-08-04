@@ -11,6 +11,7 @@ test("the page exposes the workshop controls and canvas", async () => {
   assert.match(html, /id="sketch-controls"/);
   assert.match(html, /Export PNG/);
   assert.match(html, /Record 6s WebM/);
+  assert.match(html, /https:\/\/github\.com\/frankalbenesius\/genart/);
 });
 
 test("keeps sketches discoverable and independently readable", async () => {
@@ -35,4 +36,13 @@ test("keeps sketches discoverable and independently readable", async () => {
     assert.match(source, /export const meta/);
     assert.match(source, /export default function draw/);
   }
+});
+
+test("keeps playground state out of the URL", async () => {
+  const studio = await readFile(
+    new URL("../src/main.js", import.meta.url),
+    "utf8",
+  );
+
+  assert.doesNotMatch(studio, /URLSearchParams|history\.replaceState|location\.search/);
 });

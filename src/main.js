@@ -33,12 +33,11 @@ const elements = {
   toast: document.querySelector("#toast"),
 };
 
-const query = new URLSearchParams(window.location.search);
 const state = {
-  sketchId: query.get("sketch") ?? "03-noise-grid",
-  seed: query.get("seed") ?? "workshop",
-  scale: Number(query.get("scale")) || 3,
-  strength: Number(query.get("strength")) || 1,
+  sketchId: "03-noise-grid",
+  seed: "workshop",
+  scale: 3,
+  strength: 1,
   paused: false,
 };
 
@@ -58,7 +57,6 @@ if (!sketches.some((sketch) => sketch.id === state.sketchId)) {
   state.sketchId = sketches[0].id;
 }
 
-const initialSketchId = state.sketchId;
 const parameterValues = new Map();
 
 function selectedSketch() {
@@ -69,14 +67,7 @@ function parametersFor(sketch) {
   if (!parameterValues.has(sketch.id)) {
     const values = {};
     for (const parameter of sketch.parameters ?? []) {
-      const rawQueryValue = query.get(`param-${parameter.key}`);
-      const queryValue =
-        sketch.id === initialSketchId && rawQueryValue !== null
-          ? Number(rawQueryValue)
-          : Number.NaN;
-      values[parameter.key] = Number.isFinite(queryValue)
-        ? queryValue
-        : parameter.default;
+      values[parameter.key] = parameter.default;
     }
     parameterValues.set(sketch.id, values);
   }
@@ -132,21 +123,6 @@ function currentTime(now = performance.now()) {
   return elapsedAtPause + (now - startedAt) / 1000;
 }
 
-function updateUrl() {
-  const nextQuery = new URLSearchParams({
-    sketch: state.sketchId,
-    seed: state.seed,
-    scale: String(state.scale),
-    strength: String(state.strength),
-  });
-  const sketch = selectedSketch();
-  const values = parametersFor(sketch);
-  for (const parameter of sketch.parameters ?? []) {
-    nextQuery.set(`param-${parameter.key}`, String(values[parameter.key]));
-  }
-  window.history.replaceState(null, "", `?${nextQuery}`);
-}
-
 function updateControls() {
   const sketch = selectedSketch();
   elements.sketch.value = sketch.id;
@@ -192,7 +168,6 @@ function draw(now = performance.now()) {
 
 function changed() {
   updateControls();
-  updateUrl();
   draw();
 }
 
@@ -305,5 +280,4 @@ window.addEventListener("keydown", (event) => {
 new ResizeObserver(() => draw()).observe(elements.canvas);
 buildSketchControls();
 updateControls();
-updateUrl();
 draw();
