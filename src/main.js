@@ -221,9 +221,12 @@ function saveImage() {
 
 elements.sketch.addEventListener("change", (event) => {
   state.sketchId = event.target.value;
+  state.scale = 3;
+  state.strength = 1;
   state.paused = false;
   elapsedAtPause = 0;
   startedAt = performance.now();
+  parameterValues.delete(state.sketchId);
   buildSketchControls();
   changed();
 });
