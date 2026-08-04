@@ -9,7 +9,7 @@ individual sketch files.
 
 ## Start locally
 
-This project requires Node.js 22.13 or newer.
+This project requires Node.js 20.19 or newer.
 
 ```sh
 npm install
@@ -110,5 +110,6 @@ it.
 
 The runtime lives in [`lib/runtime.js`](./lib/runtime.js), the seeded random
 function in [`lib/random.js`](./lib/random.js), and the selector and controls in
-[`app/studio.tsx`](./app/studio.tsx). There is intentionally not much more to
-it.
+[`src/main.js`](./src/main.js). There is intentionally not much more to it: the
+only runtime dependency is `simplex-noise`, and Vite is only the development
+server and build tool.
