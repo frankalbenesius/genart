@@ -21,9 +21,8 @@ the sketch selector and move through the examples in order.
 
 ## Make a sketch
 
-Click **Download new sketch** in the playground, or copy
-[`sketches/new-sketch-template.js`](./sketches/new-sketch-template.js). Move the
-new file into `sketches/` and give it a useful filename:
+Copy [`sketches/template.js`](./sketches/template.js), remove `hidden: true`,
+and give the copy a useful filename:
 
 ```text
 sketches/my-wobbly-lines.js
@@ -32,7 +31,7 @@ sketches/my-wobbly-lines.js
 The selector uses Vite's `import.meta.glob` to find `sketches/*.js`. During
 development, adding or renaming a file refreshes the page and updates the
 selector. A production build bundles every sketch that existed at build time.
-Files beginning with `new-` are treated as templates and hidden.
+Any sketch with `meta.hidden: true` stays out of the selector.
 
 Every sketch exports some display information and one drawing function:
 

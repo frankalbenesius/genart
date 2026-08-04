@@ -15,11 +15,11 @@
       <aside class="sidebar">
         <p class="eyebrow">Genart playground</p>
         <h1>Noise, made visible.</h1>
-        <p class="description" id="description"></p>
 
         <div class="control">
           <label for="sketch">Sketch</label>
           <select id="sketch"></select>
+          <p class="description" id="description"></p>
         </div>
 
         <div class="control">
@@ -47,13 +47,12 @@
         </div>
 
         <div class="actions">
-          <button type="button" id="secondary-action">Copy link</button>
+          <button type="button" id="secondary-action" hidden>Pause</button>
           <button type="button" class="primary" id="export">Export PNG</button>
-          <button type="button" class="wide" id="new-sketch">Download new sketch</button>
         </div>
         <p class="hint">
-          Press S to export. Add a file to <code>/sketches</code> and it appears
-          here automatically.
+          Press S to export. Copy <code>sketches/template.js</code> to start a
+          sketch of your own.
         </p>
       </aside>
 

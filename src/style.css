@@ -13,6 +13,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { min-height: 100%; margin: 0; }
 button, select, input { color: inherit; font: inherit; }
 button, select {
@@ -38,8 +39,8 @@ button:focus-visible, select:focus-visible, input:focus-visible {
   backdrop-filter: blur(16px);
 }
 .eyebrow { margin: 0 0 8px; color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: 0.12em; text-transform: uppercase; }
-h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); font-weight: 640; letter-spacing: -0.045em; line-height: 0.96; }
-.description { min-height: 60px; margin: 18px 0 24px; color: var(--muted); font-size: 14px; line-height: 1.45; }
+h1 { margin: 0 0 20px; font-size: 22px; font-weight: 680; letter-spacing: -0.035em; line-height: 1; white-space: nowrap; }
+.description { min-height: 58px; margin: 2px 2px 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
 .control { display: grid; gap: 8px; margin: 18px 0; }
 .control-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
 .control label, .control-row label { font-size: 12px; font-weight: 680; }

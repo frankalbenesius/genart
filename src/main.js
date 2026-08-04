@@ -1,10 +1,9 @@
 import "./style.css";
 import { exportPng, renderSketch, resizeCanvasToDisplaySize } from "../lib/runtime";
-import newSketchSource from "../sketches/new-sketch-template.js?raw";
 
 const modules = import.meta.glob("../sketches/*.js", { eager: true });
 const sketches = Object.entries(modules)
-  .filter(([path]) => !path.split("/").pop().startsWith("new-"))
+  .filter(([, module]) => !module.meta.hidden)
   .map(([path, module]) => ({
     id: path.split("/").pop().replace(".js", ""),
     draw: module.default,
@@ -24,7 +23,6 @@ const elements = {
   strengthValue: document.querySelector("#strength-value"),
   secondaryAction: document.querySelector("#secondary-action"),
   export: document.querySelector("#export"),
-  newSketch: document.querySelector("#new-sketch"),
   toast: document.querySelector("#toast"),
 };
 
@@ -81,11 +79,9 @@ function updateControls() {
   elements.scaleValue.value = state.scale.toFixed(1);
   elements.strengthValue.value = state.strength.toFixed(1);
   elements.description.textContent = sketch.description;
-  elements.secondaryAction.textContent = sketch.animated
-    ? state.paused
-      ? "Play"
-      : "Pause"
-    : "Copy link";
+  elements.secondaryAction.hidden = !sketch.animated;
+  elements.secondaryAction.textContent = state.paused ? "Play" : "Pause";
+  elements.export.classList.toggle("wide", !sketch.animated);
 }
 
 function draw(now = performance.now()) {
@@ -163,14 +159,7 @@ elements.strength.addEventListener("input", (event) => {
   changed();
 });
 
-elements.secondaryAction.addEventListener("click", async () => {
-  const sketch = selectedSketch();
-  if (!sketch.animated) {
-    await navigator.clipboard.writeText(window.location.href);
-    showToast("Copied this sketch URL");
-    return;
-  }
-
+elements.secondaryAction.addEventListener("click", () => {
   const now = performance.now();
   if (state.paused) {
     startedAt = now;
@@ -182,17 +171,6 @@ elements.secondaryAction.addEventListener("click", async () => {
 });
 
 elements.export.addEventListener("click", saveImage);
-
-elements.newSketch.addEventListener("click", () => {
-  const blob = new Blob([newSketchSource], { type: "text/javascript" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "my-sketch.js";
-  link.click();
-  URL.revokeObjectURL(url);
-  showToast("Downloaded my-sketch.js — move it into /sketches");
-});
 
 window.addEventListener("keydown", (event) => {
   if (event.target.matches("input, select")) return;

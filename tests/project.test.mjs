@@ -14,7 +14,7 @@ test("the page exposes the workshop controls and canvas", async () => {
 test("keeps sketches discoverable and independently readable", async () => {
   const sketchRoot = new URL("../sketches/", import.meta.url);
   const files = (await readdir(sketchRoot)).filter(
-    (file) => file.endsWith(".js") && !file.startsWith("new-"),
+    (file) => file.endsWith(".js") && file !== "template.js",
   );
   const studio = await readFile(
     new URL("../src/main.js", import.meta.url),
@@ -23,6 +23,10 @@ test("keeps sketches discoverable and independently readable", async () => {
 
   assert.equal(files.length, 6);
   assert.match(studio, /import\.meta\.glob/);
+  assert.match(studio, /!module\.meta\.hidden/);
+
+  const template = await readFile(new URL("template.js", sketchRoot), "utf8");
+  assert.match(template, /hidden: true/);
 
   for (const file of files) {
     const source = await readFile(new URL(file, sketchRoot), "utf8");
