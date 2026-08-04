@@ -12,9 +12,10 @@
   </head>
   <body>
     <main class="studio">
-      <aside class="sidebar">
-        <div class="topline">
-          <p class="eyebrow">Genart playground</p>
+      <aside class="sidebar" id="controls-panel">
+        <p class="eyebrow">Genart playground</p>
+        <h1>Noise, made visible.</h1>
+        <div class="topline-actions">
           <a
             class="source-link"
             href="https://github.com/frankalbenesius/genart"
@@ -23,8 +24,15 @@
           >
             View source
           </a>
+          <button
+            class="panel-toggle"
+            id="hide-controls"
+            type="button"
+            aria-controls="controls-panel"
+          >
+            Hide
+          </button>
         </div>
-        <h1>Noise, made visible.</h1>
 
         <div class="control">
           <label for="sketch">Sketch</label>
@@ -72,6 +80,15 @@
       </aside>
 
       <section class="canvas-area" aria-label="Sketch preview">
+        <button
+          class="show-controls"
+          id="show-controls"
+          type="button"
+          aria-controls="controls-panel"
+          hidden
+        >
+          Show controls
+        </button>
         <div class="canvas-frame"><canvas id="canvas"></canvas></div>
         <div class="toast" id="toast" role="status" hidden></div>
       </section>

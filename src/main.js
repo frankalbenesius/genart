@@ -31,6 +31,9 @@ const elements = {
   export: document.querySelector("#export"),
   recordWebm: document.querySelector("#record-webm"),
   toast: document.querySelector("#toast"),
+  studio: document.querySelector(".studio"),
+  hideControls: document.querySelector("#hide-controls"),
+  showControls: document.querySelector("#show-controls"),
 };
 
 const state = {
@@ -171,6 +174,15 @@ function changed() {
   draw();
 }
 
+function setControlsHidden(hidden) {
+  elements.studio.classList.toggle("controls-hidden", hidden);
+  elements.showControls.hidden = !hidden;
+  requestAnimationFrame(() => {
+    draw();
+    (hidden ? elements.showControls : elements.hideControls).focus();
+  });
+}
+
 function showToast(message) {
   clearTimeout(toastTimeout);
   elements.toast.textContent = message;
@@ -238,6 +250,8 @@ elements.secondaryAction.addEventListener("click", () => {
 });
 
 elements.export.addEventListener("click", saveImage);
+elements.hideControls.addEventListener("click", () => setControlsHidden(true));
+elements.showControls.addEventListener("click", () => setControlsHidden(false));
 
 elements.recordWebm.addEventListener("click", async () => {
   const sketch = selectedSketch();

@@ -12,6 +12,8 @@ test("the page exposes the workshop controls and canvas", async () => {
   assert.match(html, /Export PNG/);
   assert.match(html, /Record 6s WebM/);
   assert.match(html, /https:\/\/github\.com\/frankalbenesius\/genart/);
+  assert.match(html, /id="hide-controls"/);
+  assert.match(html, /id="show-controls"/);
 });
 
 test("keeps sketches discoverable and independently readable", async () => {
@@ -45,4 +47,5 @@ test("keeps playground state out of the URL", async () => {
   );
 
   assert.doesNotMatch(studio, /URLSearchParams|history\.replaceState|location\.search/);
+  assert.match(studio, /setControlsHidden/);
 });
