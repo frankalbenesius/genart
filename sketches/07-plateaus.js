@@ -17,6 +17,14 @@ export const meta = {
       default: 0.065,
     },
     {
+      key: "clamp",
+      label: "Clamp",
+      min: 0.01,
+      max: 1,
+      step: 0.01,
+      default: 0.1,
+    },
+    {
       key: "direction",
       label: "Direction",
       min: -180,
@@ -44,7 +52,8 @@ export default function draw({
   strength,
   parameters,
 }) {
-  const { columns, rows, displacement, direction, opacity } = parameters;
+  const { columns, rows, displacement, clamp, direction, opacity } =
+    parameters;
   const margin = width * 0.06;
   const shift = Math.min(width, height) * displacement * strength;
   const angle = (direction * Math.PI) / 180;
@@ -60,9 +69,14 @@ export default function draw({
       const u = column / (columns - 1);
       const v = row / (rows - 1);
       const noise = noise2D(u * scale, v * scale);
+      const clampedNoise = Math.max(-clamp, Math.min(clamp, noise));
       points.push([
-        margin + u * (width - margin * 2) + Math.cos(angle) * noise * shift,
-        margin + v * (height - margin * 2) + Math.sin(angle) * noise * shift,
+        margin +
+          u * (width - margin * 2) +
+          Math.cos(angle) * clampedNoise * shift,
+        margin +
+          v * (height - margin * 2) +
+          Math.sin(angle) * clampedNoise * shift,
       ]);
     }
   }
