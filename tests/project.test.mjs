@@ -9,6 +9,7 @@ test("the page exposes the workshop controls and canvas", async () => {
   assert.match(html, /id="scale"/);
   assert.match(html, /id="strength"/);
   assert.match(html, /Export PNG/);
+  assert.match(html, /Record 6s WebM/);
 });
 
 test("keeps sketches discoverable and independently readable", async () => {
@@ -21,7 +22,7 @@ test("keeps sketches discoverable and independently readable", async () => {
     "utf8",
   );
 
-  assert.equal(files.length, 6);
+  assert.equal(files.length, 9);
   assert.match(studio, /import\.meta\.glob/);
   assert.match(studio, /!module\.meta\.hidden/);
 

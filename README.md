@@ -78,6 +78,10 @@ redraw when their inputs change.
 Press `S` or click **Export PNG** to render a 2400 × 1600 PNG. Exports use the
 same seed and controls as the visible sketch.
 
+Animated sketches also show **Record 6s WebM**. Recording captures the visible
+canvas at 60 frames per second using the browser's `MediaRecorder` API. Browser
+support varies, so PNG remains the dependable export path.
+
 The selected sketch, seed, scale, and strength live in the URL query string.
 Copying the URL recreates the same still image. Time is intentionally not
 included.
@@ -97,6 +101,10 @@ record paths explicitly when vector output matters.
 With another 15 minutes, add **Add time** and **Leave the grid**. The latter
 shows that a grid only visualizes the field; any point or moving path can sample
 it.
+
+The remaining sketches are optional demos adapted from Frank's older plotter
+work: **Plateaus** distorts connected topology, **Hair field** grows many paths
+through a field, and **Faces** maps noise onto more semantic visual decisions.
 
 ## Where to keep exploring
 

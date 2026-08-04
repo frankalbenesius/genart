@@ -1,5 +1,10 @@
 import "./style.css";
-import { exportPng, renderSketch, resizeCanvasToDisplaySize } from "../lib/runtime";
+import {
+  exportPng,
+  exportWebm,
+  renderSketch,
+  resizeCanvasToDisplaySize,
+} from "../lib/runtime";
 
 const modules = import.meta.glob("../sketches/*.js", { eager: true });
 const sketches = Object.entries(modules)
@@ -23,6 +28,7 @@ const elements = {
   strengthValue: document.querySelector("#strength-value"),
   secondaryAction: document.querySelector("#secondary-action"),
   export: document.querySelector("#export"),
+  recordWebm: document.querySelector("#record-webm"),
   toast: document.querySelector("#toast"),
 };
 
@@ -81,6 +87,7 @@ function updateControls() {
   elements.description.textContent = sketch.description;
   elements.secondaryAction.hidden = !sketch.animated;
   elements.secondaryAction.textContent = state.paused ? "Play" : "Pause";
+  elements.recordWebm.hidden = !sketch.animated;
   elements.export.classList.toggle("wide", !sketch.animated);
 }
 
@@ -171,6 +178,36 @@ elements.secondaryAction.addEventListener("click", () => {
 });
 
 elements.export.addEventListener("click", saveImage);
+
+elements.recordWebm.addEventListener("click", async () => {
+  const sketch = selectedSketch();
+  if (!sketch.animated) return;
+
+  if (state.paused) {
+    startedAt = performance.now();
+    state.paused = false;
+    changed();
+  }
+
+  elements.recordWebm.disabled = true;
+  elements.recordWebm.textContent = "Recording 6…";
+
+  try {
+    await exportWebm({
+      canvas: elements.canvas,
+      filename: `${sketch.id}-${state.seed}.webm`,
+      onProgress(seconds) {
+        elements.recordWebm.textContent = `Recording ${seconds}…`;
+      },
+    });
+    showToast("Exported a 6-second WebM");
+  } catch (error) {
+    showToast(error.message);
+  } finally {
+    elements.recordWebm.disabled = false;
+    elements.recordWebm.textContent = "Record 6s WebM";
+  }
+});
 
 window.addEventListener("keydown", (event) => {
   if (event.target.matches("input, select")) return;
